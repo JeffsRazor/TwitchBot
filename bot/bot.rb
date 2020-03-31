@@ -7,19 +7,19 @@ require 'google/apis/youtube_v3'
 require 'googleauth'
 require 'googleauth/stores/file_token_store'
 
-require 'selenium-webdriver'
+#require 'selenium-webdriver'
 require 'fileutils'
 require 'json'
 require 'date'
 
 TWITCH_HOST = "irc.chat.twitch.tv"
 TWITCH_PORT = 6667
-Selenium::WebDriver::Chrome::Service#driver_path=F:/Jeff/Documents/Projects/Ruby/TwitchBot/bot/chromedriver_win32/chromedriver_win32.exe
+#Selenium::WebDriver::Chrome::Service #driver_path=F:/Jeff/Documents/Projects/Ruby/TwitchBot/bot/chromedriver_win32/chromedriver_win32.exe
 class TwitchBot
 
   def initialize
     @nickname = "jeffbot"
-    @password = "oauth:oo72d8s0xv1ebr1tqtz06msoololgq"
+    @password = File.read("F:/Jeff/Documents/Projects/Ruby/TwitchBotKeys/OauthToken.txt")
     @channel = "jeffboi"
     @socket = TCPSocket.open(TWITCH_HOST, TWITCH_PORT)
 
@@ -40,7 +40,7 @@ class TwitchBot
   end
 
   def run
-    playlist= Array[]
+    playlist= Array[] #array for playlist currently inactive
     line= ''
     oldLine=''
     until @socket.eof? do
@@ -73,34 +73,34 @@ class TwitchBot
         if content.include? "anime"
           write_to_chat(username+ " loves anime!")
         end
-        if content.include? "!playlist"
-              write_to_chat("Starting playlist")
-              startPlaylist(playlist)
-          end
+      #  if content.include? "!playlist"
+      #        write_to_chat("Starting playlist")
+      #        startPlaylist(playlist)
+      #    end
         if content.include? "!commands"
               write_to_chat("Here are some commands: !hello !followage  ")
 
           end
-        if content.include? "!requestsong"
-          s=content
-          i =0
-          j=0
-          count=0
-          while i<13
-            s[j]=' '
-            p s
-            i+=1
-            j+=1
-          end
-          s.lstrip!
-          s.chop
-          p s
-          if s.include? "youtube.com"
+      #  if content.include? "!requestsong"
+      #    s=content
+      #    i =0
+      #    j=0
+      #    count=0
+      #    while i<13
+      #      s[j]=' '
+      #      p s
+      #      i+=1
+      #      j+=1
+      #    end
+      #    s.lstrip!
+      #    s.chop
+      #    p s
+      #    if s.include? "youtube.com"
+#
+#          write_to_chat("Your song was added!")
+#          end
 
-          write_to_chat("Your song was added!")
-          end
-
-        end
+#        end
       end
     end
   end
@@ -112,21 +112,21 @@ class TwitchBot
     write_to_system "QUIT"
   end
 end
-def startPlaylist(playlist)
-  driver = Selenium::WebDriver.for:chrome
+#def startPlaylist(playlist)
+  #driver = Selenium::WebDriver.for:chrome
 
-    driver.get(playlist[0])
-    element = driver.find_element :class => "ytp-time-duration"
-    s = element.text
-    p s
-  if dt = DateTime.parse(s) rescue false
-    t = dt.hour*60 + dt.min
-  end
-    p t
-    sleep t
-    driver.quit
-    playlist.delete_at(0)
- end
+  #  driver.get(playlist[0])
+  #  element = driver.find_element :class => "ytp-time-duration"
+  #  s = element.text
+  #  p s
+#  if dt = DateTime.parse(s) rescue false
+#    t = dt.hour*60 + dt.min
+#  end
+#    p t
+#    sleep t
+#    driver.quit
+#    playlist.delete_at(0)
+ #end
 bot = TwitchBot.new
 trap("INT") { bot.quit }
 bot.run
